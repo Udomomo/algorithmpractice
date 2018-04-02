@@ -7,7 +7,16 @@ import java.util.Scanner;
 
 class HeapManager {
     
-    List<String> heapArray = new ArrayList<String>();
+    public List<String> heapArray = new ArrayList<String>();
+    public List<String> resultArray = new ArrayList<String>();
+    
+    public String executeHeapSort(String target) {
+        
+        List<String> targetArray = new ArrayList<String>(Arrays.asList(target.split("")));
+        insert(targetArray);
+        extract_min();
+        return toString();
+    }
     
     public void insert(List<String> targetArray) {
         for (String s : targetArray) {
@@ -17,18 +26,78 @@ class HeapManager {
         }
     }
     
-    public void bubble_up(int index) {
-        while (index > 0) {
-            int parent_index = Math.floorDiv(index + 1, 2) - 1;
-            if (heapArray.get(index).compareToIgnoreCase(heapArray.get(parent_index)) < 0) {
-                swapValue(index, parent_index);
-                index = parent_index;
-            }
-            else return;
+    public void extract_min() {
+        
+        while (heapArray.size() > 0) {
+            
+            int size = heapArray.size();
+            resultArray.add(heapArray.get(0));
+            // 単に先頭の要素を削除するだけでは全ての要素のインデックスが一つずつずれてしまうため、
+            // 先頭と最後尾を入れ替えてから削除を行う
+            swapHeapValue(0, size - 1);
+            heapArray.remove(size - 1);
+            bubble_down(0);
+            
         }
+        
     }
     
-    public void swapValue(int i, int j) {
+    public void bubble_up(int index) {
+       
+        while (index > 0) {
+            
+            int parent_index = Math.floorDiv(index + 1, 2) - 1;
+            
+            if (hasSmallerValue(index, parent_index)) {
+                swapHeapValue(index, parent_index);
+                index = parent_index;
+            }
+                
+            else return;
+        
+        }
+        
+    }
+    
+    public void bubble_down(int index) {
+        
+        while (true) {
+            int left_child_index = index * 2 + 1;
+            int right_child_index = left_child_index + 1;
+            int min_child_index;
+            
+            if (left_child_index > heapArray.size() - 1) {
+                break;
+            }
+            else if (right_child_index > heapArray.size() - 1) {
+                min_child_index = left_child_index;
+            }            
+            else {
+                if (hasSmallerValue(left_child_index, right_child_index)) {
+                    min_child_index = left_child_index;
+                }
+                else min_child_index = right_child_index;
+            }
+            
+            if (hasSmallerValue(min_child_index, index)) {
+                swapHeapValue(min_child_index, index);
+                index = min_child_index;
+            }
+            else break;
+            
+        }
+        
+    }
+    
+    public boolean hasSmallerValue(int i, int j) {
+        if (heapArray.get(i).compareToIgnoreCase(heapArray.get(j)) < 0) {
+            return true;
+        }
+
+        return false;
+    }
+    
+    public void swapHeapValue(int i, int j) {
         String temp = heapArray.get(i);
         heapArray.set(i, heapArray.get(j));
         heapArray.set(j, temp);
@@ -36,7 +105,11 @@ class HeapManager {
     
     @Override
     public String toString() {
-        return heapArray.toString();
+        StringBuilder buf = new StringBuilder();
+        for (String str: resultArray) {
+            buf.append(str);
+        }
+        return buf.toString();
     }
     
 }
@@ -49,11 +122,8 @@ public class HeapSort {
         String target = stdIn.next();
         stdIn.close();
         
-        List<String> targetArray = new ArrayList<String>(Arrays.asList(target.split("")));
-        
         HeapManager heap = new HeapManager();
-        heap.insert(targetArray);
-        System.out.println(heap.toString());
+        System.out.println(heap.executeHeapSort(target));
         
     }
     
