@@ -25,7 +25,7 @@ def merge(leftlist, rightlist):
             mergedlist.append(leftlist[i])
             i += 1
         else:
-            mergedlist.append(rightlist[i])
+            mergedlist.append(rightlist[j])
             j += 1
     
     if i == len(leftlist):
