@@ -9,18 +9,18 @@ def is_ok(index, key):
 #二分探索のテンプレ。左は条件を満たさない。右は条件を満たす。
 #右-左が1になれば、そこが答え。
 def binary_search(key):
-    left = -1 # a[0]が条件を満たすこともある
-    right = len(a) # a[len(a)-1]が条件を満たさないこともある
+    ng = -1 # a[0]が条件を満たすこともある
+    ok = len(a) # a[len(a)-1]が条件を満たさないこともある
 
-    while right - left > 1:
-        mid = left + (right - left) // 2
+    while abs(ng - ok) > 1:
+        mid = (ng + ok) // 2
         
         if is_ok(mid, key):
-            right = mid
+            ok = mid
         else:
-            left = mid
+            ng = mid
     
-    return right
+    return ok
 
 if __name__ == "__main__":
     a = [1, 14, 32, 51, 73, 151, 243, 419, 750, 910]
